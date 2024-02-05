@@ -3,11 +3,17 @@ import Product from "../models/Product.ts";
 import ProductCategoryRow from "./ProductCategoryRow.tsx";
 import ProductRow from "./ProductRow.tsx";
 
-export default function ProductTable({ products }: { products: Product[] }) {
+export default function ProductTable({ products, filterText, inStockOnly }: { products: Product[], filterText: string, inStockOnly: boolean }) {
   const rows: JSX.Element[] = [];
   let lastCategory: string | null = null;
 
   products.forEach((product) => { 
+    if (product.name.toLowerCase().indexOf(filterText.toLowerCase()) === -1) {
+      return;
+    }
+    if (inStockOnly && !product.stocked) {
+      return;
+    }
     if (product.category !== lastCategory) {
       rows.push(
         <ProductCategoryRow 
